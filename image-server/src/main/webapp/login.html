@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--移动端预览-->
+    <meta name="viewport" content="device-width, initial-scale=1.0">
+    <title>个人图片库</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.css">
+    <link rel="stylesheet" href="assets/css/me.css">
+    <!--图标部署-->
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.2/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/semantic-ui/2.2.4/semantic.min.js"></script>
+    <link rel="bookmark" href="/favicon.ico" type="image/x-icon"/>
+    <script src="../static/js/md5.min.js"></script>
+    <style>
+        .err{
+            background-color: pink;
+            width: 100%;
+            height: 52px;
+            margin: 1px auto;
+            line-height: 52px;
+            font-weight: 500;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<br/>
+<br/>
+<br/>
+<div class="m-container-small m-padded-tb-massive" style="max-width: 28em  !important;margin:0 auto">
+    <div class="ui container" id="log" style="margin:0 auto">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui blue image header">
+                    <!--<img src="assets/images/logo.png" class="image">-->
+                    <div class="content">
+                        相册登录
+                    </div>
+                </h2>
+                <div class="ui large form">
+                    <div class="ui  segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" placeholder="用户名" id="username">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" placeholder="密码" id="password">
+                            </div>
+                        </div>
+                        <button type="button" class="ui fluid large blue submit button" id="login">登   录</button>
+						<br>
+						<button type="button" class="ui fluid large blue submit button" id="registerPage">立即注册</button>
+                    </div>
+
+                    <div id="errorMsg"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<div class="ui container" style="display:none;margin:0 auto" id="reg">
+        <div class="ui middle aligned center aligned grid">
+            <div class="column">
+                <h2 class="ui blue image header">
+                    <!--<img src="assets/images/logo.png" class="image">-->
+                    <div class="content">
+                        用户注册
+                    </div>
+                </h2>
+                <div class="ui large form">
+                    <div class="ui  segment">
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="text" placeholder="用户名" id="regusername">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" placeholder="密码" id="regpassword">
+                            </div>
+                        </div>
+						<div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" placeholder="确认密码" id="repassword">
+                            </div>
+                        </div>
+						<br>
+						<button type="button" class="ui fluid large blue submit button" id="register">点击注册</button>
+                    </div>
+
+                    <div id="error"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#login").click(function () {
+        $.post("/image_server/login",{
+            username: $("#username").val(),
+            password: $("#password").val()
+        },function (data) {
+            //data : {flag:false,errorMsg:''}
+            if (data.flag) {
+                //登录成功
+                alert(data.message)
+                location.href  = "/image_server/index.html";
+            } else {
+                //登录失败
+                $("#errorMsg").addClass("err")
+                $("#errorMsg").html(data.message);
+            }
+        })
+    })
+	
+	$("#registerPage").click(function(){
+        document.getElementById("log").style.display="none";//隐藏
+        document.getElementById("reg").style.display="";//显示
+	})
+
+    $("#register").click(function(){
+        var username =  $("#regusername").val();
+        var password = $("#regpassword").val();
+        var repassword = $("#repassword").val();
+        if(password != repassword){
+            alert("两次输入的密码不同");
+            return;
+        }else{
+            $.post("/image_server/register",{
+            username: username,
+            password:password
+        },function (data) {
+            //data : {flag:false,message:''}
+            if (data.flag) {
+                //注册成功
+                alert(data.message);
+                location.href  = "/image_server/login.html";
+            } else {
+                //注册失败
+                $("#errorMsg").addClass("err")
+                $("#errorMsg").html(data.message);
+            }
+        })
+        }
+    })
+</script>
+</body>
+</html>
